@@ -24,22 +24,32 @@ const startApplication = () => {
                 "Add Role",
                 "View All Departments",
                 "Add Department",
-                "Exit"
+                "View All Employees",
+                "Quit"
             ]
         }
     ])
     .then(({ choice} ) => {
         if (choice === "Add Employee") {
-
+            console.log("You added an employee");
+            return startApplication();
         } else if (choice === "Update Employee Role") {
-
+            console.log("You updated an employee");
+            return startApplication();
         } else if (choice === "View All Roles") {
-
+            console.log("You viewd all roles");
+            return startApplication();
         } else if (choice === "Add Role") {
-
+            console.log("you added a role");
+            return startApplication();
         } else if (choice === "View All Departments") {
-
-        } else {
+            console.log("you viewed all departments")
+            return startApplication();
+        } else if (choice === "View All Employees") {
+            console.log("You viewed all employees");
+            return startApplication();
+        } 
+        else {
             console.log("Have a nice day!");
             return;
         }
