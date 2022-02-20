@@ -38,6 +38,10 @@ const employeePrompts = (query, startApplication) => {
     })
 };
 
+const promptRoles = () => {
+    
+}
+
 const startApplication = () => {
     return inquirer.prompt([
         {
