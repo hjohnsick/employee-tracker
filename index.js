@@ -6,17 +6,23 @@ const employeePrompts = (query, startApplication) => {
         {
             type: "input",
             name: "firstName",
-            message: "Enter employee's first name:"
+            message: "What is the employee's first name?"
         },
         {
             type: "input",
             name: "lastName",
-            message: "Enter employee's last name:"
+            message: "What is the employee's last name?"
         },
         {
-            type: "input",
+            type: "list",
             name: "roleId",
-            message: "Enter employee's role id:"
+            choices: [
+                {
+                    name: "Salesperson",
+                    value: 1
+                }
+            ],
+            message: "What is the employee's role?"
         },
         {
             type: "list",
@@ -31,16 +37,53 @@ const employeePrompts = (query, startApplication) => {
                     value:null
                 }
             ],
-            message: "Enter employee's manager id:"
+            message: "Who is the employee's manager?"
         }
     ]).then(({firstName, lastName, roleId, managerId}) => {
         query.addEmployee(firstName, lastName, roleId, managerId, startApplication);
     })
 };
 
-const promptRoles = () => {
-    
-}
+const rolePrompts = (query, startApplication) => {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "What is the name of the role?",
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "What is the salary of the role?"
+        },
+        {
+            type: "list",
+            name: "department",
+            message: "Which department does the role belong to?",
+            choices: [
+                "Engineering",
+                "Finance",
+                "Legal",
+                "Sales",
+                "Service"
+            ]
+        }
+    ]).then(({ title, salary, department} ) => {
+        query.addRole(title, salary, department, startApplication);
+    })
+};
+
+const departmentPrompts = (query, startApplication) => {
+    return inquirer.prompt([
+        {
+            type: "input",
+            name: "name",
+            message: "What is the name of the department?"
+        }
+    ]).then(({name}) => {
+        query.addDepartment(name, startApplication);
+    })
+};
 
 const startApplication = () => {
     return inquirer.prompt([
@@ -69,7 +112,7 @@ const startApplication = () => {
         } else if (choice === "View All Roles") {
            query.viewAllRoles(startApplication);
         } else if (choice === "Add Role") {
-           query.addRoles(startApplication);
+           rolePrompts(query, startApplication);
         } else if (choice === "View All Departments") {
              query.viewDepartments(startApplication)
         } else if (choice === "View All Employees") {
