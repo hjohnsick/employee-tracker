@@ -114,8 +114,11 @@ const startApplication = () => {
         } else if (choice === "Add Role") {
            rolePrompts(query, startApplication);
         } else if (choice === "View All Departments") {
-             query.viewDepartments(startApplication)
-        } else if (choice === "View All Employees") {
+            query.viewDepartments(startApplication);
+        } else if (choice === "Add Department") {
+            departmentPrompts(query, startApplication);
+        } 
+        else if (choice === "View All Employees") {
             query.viewAllEmployees(startApplication);
         } 
         else {
