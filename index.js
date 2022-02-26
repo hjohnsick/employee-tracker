@@ -1,10 +1,18 @@
 const inquirer = require('inquirer');
 const Query = require('./lib/Query');
 
-// Add employee
-const employeePrompts = (query, startApplication) => {
-    let managers = query.viewManagers();
-    return inquirer.prompt([
+const query = new Query();
+async function managersTest () {
+    await query.viewManagers().then((response) => {
+        console.log(response);
+        return response;
+    })
+}
+
+//Add employee
+const employeePrompts = async(query, startApplication) => {
+    
+    return await inquirer.prompt([
         {
             type: "input",
             name: "firstName",
@@ -18,34 +26,27 @@ const employeePrompts = (query, startApplication) => {
         {
             type: "list",
             name: "roleId",
+            message: "What is the employee's role?",
             choices: [
-                {
+                { //need to edit this so it is coming from database
                     name: "Salesperson",
                     value: 1
                 }
             ],
-            message: "What is the employee's role?"
+
         },
         {
             type: "list",
             name: "managerId",
-            choices: [
-                {
-                    name: "Randy Travis",
-                    value: 1
-                },
-                {
-                    name: "None",
-                    value: null
-                }
-            ],
-            message: "Who is the employee's manager?"
+            message: "Who is the employee's manager?",
+            choices: managersTest()
         }
     ]).then(({firstName, lastName, roleId, managerId}) => {
         query.addEmployee(firstName, lastName, roleId, managerId, startApplication);
     })
 };
 
+// Add a new role
 const rolePrompts = (query, startApplication) => {
     return inquirer.prompt([
         {
@@ -76,6 +77,7 @@ const rolePrompts = (query, startApplication) => {
     })
 };
 
+// View all departments
 const departmentPrompts = (query, startApplication) => {
     return inquirer.prompt([
         {
@@ -87,6 +89,55 @@ const departmentPrompts = (query, startApplication) => {
         query.addDepartment(name, startApplication);
     })
 };
+
+const updateRolePrompts = (query, startApplication) => {
+    return inquirer.prompt([
+        {
+            type: "list",
+            name: "employee",
+            message: "Which employee's role do you want to update?",
+            choices: [ //will need to pull these from the database
+                {
+                    name: "Randy Travis",
+                    value: 1
+                },
+                {
+                    name: "Regina Philangy",
+                    value: 2
+                },
+                {
+                    name: "Judy Moody",
+                    value: 3
+                },
+                {
+                    name: "Bruce Lee",
+                    value: 4
+                }
+            ]
+        },
+        {
+            type: "list",
+            name: "role",
+            message: "Which role do you want to assign the selected employee?",
+            choices: [
+                {
+                    name: "Salesperson",
+                    value: 1
+                },
+                {
+                    name: "Sales Lead",
+                    value: 2
+                },
+                {
+                    name: "Software Engineer",
+                    value: 3
+                }
+            ]
+        }
+    ]).then(({ employee, role }) => {
+        query.updateEmployeeRole(role, employee, startApplication);
+    });
+}
 
 const startApplication = () => {
     return inquirer.prompt([
@@ -109,9 +160,9 @@ const startApplication = () => {
     .then(({ choice} ) => {
         const query = new Query();
         if (choice === "Add Employee") {
-            employeePrompts(query, startApplication)
+            employeePrompts(query, startApplication);
         } else if (choice === "Update Employee Role") {
-            query.updateEmployeeRole(startApplication);
+            updateRolePrompts(query, startApplication);
         } else if (choice === "View All Roles") {
            query.viewAllRoles(startApplication);
         } else if (choice === "Add Role") {
@@ -133,5 +184,7 @@ const startApplication = () => {
 
 startApplication();
 
-// const query = new Query();
-// console.log(query.viewManagers());
+
+
+
+
