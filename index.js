@@ -1,18 +1,10 @@
 const inquirer = require('inquirer');
 const Query = require('./lib/Query');
 
-const query = new Query();
-async function managersTest () {
-    await query.viewManagers().then((response) => {
-        console.log(response);
-        return response;
-    })
-}
-
 //Add employee
-const employeePrompts = async(query, startApplication) => {
+const employeePrompts = async (managers) => {
     
-    return await inquirer.prompt([
+    const { firstName, lastName, roleId, managerId } = await inquirer.prompt([
         {
             type: "input",
             name: "firstName",
@@ -28,22 +20,21 @@ const employeePrompts = async(query, startApplication) => {
             name: "roleId",
             message: "What is the employee's role?",
             choices: [
-                { //need to edit this so it is coming from database
+                {
                     name: "Salesperson",
                     value: 1
                 }
             ],
-
         },
         {
             type: "list",
             name: "managerId",
             message: "Who is the employee's manager?",
-            choices: managersTest()
+            choices: managers
         }
-    ]).then(({firstName, lastName, roleId, managerId}) => {
-        query.addEmployee(firstName, lastName, roleId, managerId, startApplication);
-    })
+    ]);
+    const query = new Query()
+    query.addEmployee(firstName, lastName, roleId, managerId, startApplication);
 };
 
 // Add a new role
@@ -77,7 +68,7 @@ const rolePrompts = (query, startApplication) => {
     })
 };
 
-// View all departments
+// Add a department
 const departmentPrompts = (query, startApplication) => {
     return inquirer.prompt([
         {
@@ -140,7 +131,8 @@ const updateRolePrompts = (query, startApplication) => {
 }
 
 const startApplication = () => {
-    return inquirer.prompt([
+   
+   return inquirer.prompt([
         {
             type: "list",
             name: "choice",
@@ -160,7 +152,8 @@ const startApplication = () => {
     .then(({ choice} ) => {
         const query = new Query();
         if (choice === "Add Employee") {
-            employeePrompts(query, startApplication);
+            query.viewManagerChoices(employeePrompts)
+            // employeePrompts(query, startApplication);
         } else if (choice === "Update Employee Role") {
             updateRolePrompts(query, startApplication);
         } else if (choice === "View All Roles") {
@@ -185,6 +178,27 @@ const startApplication = () => {
 startApplication();
 
 
+// async function seeManagers() {
+//     const query = new Query();
+//     try{
+//         const managers = await query.viewManagers();
+//         return managers;
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
 
+// const query = new Query();
+// query.viewManagers();
+// const myManagers = query.viewManagers().then((managers) => {
+//   return managers;
+// }).catch((error) => console.error(error.message));
 
+// console.log(seeManagers());
+// console.log(myManagers);
+// query.viewManagerChoices();
+// query.viewEmployeeChoices();
+// console.log(query.viewManagers());
 
+// console.log(query.viewTitleChoices());
+// console.log(query.viewManagerChoices());
