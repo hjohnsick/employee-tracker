@@ -2,7 +2,7 @@ const inquirer = require('inquirer');
 const Query = require('./lib/Query');
 
 //Add employee
-const employeePrompts = async (managers) => {
+const employeePrompts = async (titles, managers) => {
     
     const { firstName, lastName, roleId, managerId } = await inquirer.prompt([
         {
@@ -19,12 +19,7 @@ const employeePrompts = async (managers) => {
             type: "list",
             name: "roleId",
             message: "What is the employee's role?",
-            choices: [
-                {
-                    name: "Salesperson",
-                    value: 1
-                }
-            ],
+            choices: titles
         },
         {
             type: "list",
@@ -75,58 +70,30 @@ const departmentPrompts = (query, startApplication) => {
     })
 };
 
-const updateRolePrompts = (query, startApplication) => {
-    return inquirer.prompt([
+const updateRolePrompts = async (employees, titles) => {
+    console.log(employees);
+    const {employee, role} = await inquirer.prompt([
         {
             type: "list",
             name: "employee",
             message: "Which employee's role do you want to update?",
-            choices: [ //will need to pull these from the database
-                {
-                    name: "Randy Travis",
-                    value: 1
-                },
-                {
-                    name: "Regina Philangy",
-                    value: 2
-                },
-                {
-                    name: "Judy Moody",
-                    value: 3
-                },
-                {
-                    name: "Bruce Lee",
-                    value: 4
-                }
-            ]
+            choices: employees
         },
         {
             type: "list",
             name: "role",
             message: "Which role do you want to assign the selected employee?",
-            choices: [
-                {
-                    name: "Salesperson",
-                    value: 1
-                },
-                {
-                    name: "Sales Lead",
-                    value: 2
-                },
-                {
-                    name: "Software Engineer",
-                    value: 3
-                }
-            ]
+            choices: titles
         }
-    ]).then(({ employee, role }) => {
-        query.updateEmployeeRole(role, employee, startApplication);
-    });
+    ]);
+    const query = new Query();
+    query.updateEmployeeRole(role, employee, startApplication);
+   
 }
 
-const startApplication = () => {
+const startApplication = async () => {
    
-   return inquirer.prompt([
+   const { choice } = await inquirer.prompt([
         {
             type: "list",
             name: "choice",
@@ -142,32 +109,39 @@ const startApplication = () => {
                 "Quit"
             ]
         }
-    ])
-    .then(({ choice} ) => {
-        const query = new Query();
-        if (choice === "Add Employee") {
-            query.viewManagerChoices(employeePrompts);
-            // employeePrompts(query, startApplication);
-        } else if (choice === "Update Employee Role") {
-            updateRolePrompts(query, startApplication);
-        } else if (choice === "View All Roles") {
-           query.viewAllRoles(startApplication);
-        } else if (choice === "Add Role") {
-            query.viewDepartmentChoices(rolePrompts);
-        //    rolePrompts(query, startApplication);
-        } else if (choice === "View All Departments") {
-            query.viewDepartments(startApplication);
-        } else if (choice === "Add Department") {
-            departmentPrompts(query, startApplication);
-        } 
-        else if (choice === "View All Employees") {
-            query.viewAllEmployees(startApplication);
-        } 
-        else {
-            console.log("Have a nice day!");
-            return;
-        }
-    });
+    ]);
+    const query = new Query();
+    if (choice === "Add Employee") {
+        // query.viewManagerChoices(employeePrompts);
+        query.addEmployeeChoices(employeePrompts);
+    } else if (choice === "Update Employee Role") {
+
+        // updateRolePrompts(query, startApplication);
+        query.viewUpdateRoleChoices(updateRolePrompts);
+
+    } else if (choice === "View All Roles") {
+
+        query.viewAllRoles(startApplication);
+
+    } else if (choice === "Add Role") {
+
+        query.viewDepartmentChoices(rolePrompts);
+    } else if (choice === "View All Departments") {
+
+        query.viewDepartments(startApplication);
+
+    } else if (choice === "Add Department") {
+
+        departmentPrompts(query, startApplication);
+    }
+    else if (choice === "View All Employees") {
+
+        query.viewAllEmployees(startApplication);
+    }
+    else {
+        console.log("Have a nice day!");
+        return;
+    }
 };
 
 startApplication();
