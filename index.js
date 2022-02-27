@@ -112,30 +112,19 @@ const startApplication = async () => {
     ]);
     const query = new Query();
     if (choice === "Add Employee") {
-        // query.viewManagerChoices(employeePrompts);
         query.addEmployeeChoices(employeePrompts);
     } else if (choice === "Update Employee Role") {
-
-        // updateRolePrompts(query, startApplication);
         query.viewUpdateRoleChoices(updateRolePrompts);
-
     } else if (choice === "View All Roles") {
-
         query.viewAllRoles(startApplication);
-
     } else if (choice === "Add Role") {
-
         query.viewDepartmentChoices(rolePrompts);
     } else if (choice === "View All Departments") {
-
         query.viewDepartments(startApplication);
-
     } else if (choice === "Add Department") {
-
         departmentPrompts(query, startApplication);
     }
     else if (choice === "View All Employees") {
-
         query.viewAllEmployees(startApplication);
     }
     else {
