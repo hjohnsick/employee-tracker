@@ -177,28 +177,3 @@ const startApplication = () => {
 
 startApplication();
 
-
-// async function seeManagers() {
-//     const query = new Query();
-//     try{
-//         const managers = await query.viewManagers();
-//         return managers;
-//     } catch (err) {
-//         console.log(err);
-//     }
-// }
-
-// const query = new Query();
-// query.viewManagers();
-// const myManagers = query.viewManagers().then((managers) => {
-//   return managers;
-// }).catch((error) => console.error(error.message));
-
-// console.log(seeManagers());
-// console.log(myManagers);
-// query.viewManagerChoices();
-// query.viewEmployeeChoices();
-// console.log(query.viewManagers());
-
-// console.log(query.viewTitleChoices());
-// console.log(query.viewManagerChoices());
