@@ -33,13 +33,13 @@ const employeePrompts = async (managers) => {
             choices: managers
         }
     ]);
-    const query = new Query()
+    const query = new Query();
     query.addEmployee(firstName, lastName, roleId, managerId, startApplication);
 };
 
 // Add a new role
-const rolePrompts = (query, startApplication) => {
-    return inquirer.prompt([
+const rolePrompts = async (departments) => {
+    const {title, salary, department} = await inquirer.prompt([
         {
             type: "input",
             name: "title",
@@ -54,18 +54,12 @@ const rolePrompts = (query, startApplication) => {
             type: "list",
             name: "department",
             message: "Which department does the role belong to?",
-            //need to edit to pull from database
-            choices: [
-                "Engineering",
-                "Finance",
-                "Legal",
-                "Sales",
-                "Service"
-            ]
+            choices: departments
         }
-    ]).then(({ title, salary, department} ) => {
-        query.addRole(title, salary, department, startApplication);
-    })
+    ]);
+    const query = new Query();
+    query.addRole(title, salary, department, startApplication);
+    
 };
 
 // Add a department
@@ -152,14 +146,15 @@ const startApplication = () => {
     .then(({ choice} ) => {
         const query = new Query();
         if (choice === "Add Employee") {
-            query.viewManagerChoices(employeePrompts)
+            query.viewManagerChoices(employeePrompts);
             // employeePrompts(query, startApplication);
         } else if (choice === "Update Employee Role") {
             updateRolePrompts(query, startApplication);
         } else if (choice === "View All Roles") {
            query.viewAllRoles(startApplication);
         } else if (choice === "Add Role") {
-           rolePrompts(query, startApplication);
+            query.viewDepartmentChoices(rolePrompts);
+        //    rolePrompts(query, startApplication);
         } else if (choice === "View All Departments") {
             query.viewDepartments(startApplication);
         } else if (choice === "Add Department") {
